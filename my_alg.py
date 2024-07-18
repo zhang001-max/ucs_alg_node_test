@@ -7,11 +7,13 @@ import time
 import numpy as np
 from tqdm import tqdm
 
-from src.ucs_alg_node import Alg, Fcn
+from ucs_alg_node import Alg
+
+from model import Fcn
 
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 model = Fcn()  # 定义模型
-weights_path = "test/weights/model_12.pth"  # 权重
+weights_path = "./weights/model_12.pth"  # 权重
 weights = torch.load(weights_path,map_location='cpu')
 model.load_state_dict(weights)
 model.to(device)
@@ -38,6 +40,10 @@ def get_frame_count(video_path):
 
 
 class MyAlg(Alg):
+    def __init__(self):
+        super().__init__()
+        pass
+    
     def rename_batch(self, video_path, save_folder):
         video_path, cur_time = download_video(video_path, 'video.mp4')
         frame_count = get_frame_count(video_path)
@@ -105,14 +111,15 @@ class MyAlg(Alg):
         return labels
 
 
-if __name__ == "__main__":
-    data = r'D:\gugol\Motion_Emotion_Dataset'
-    save_folder = 'test/videos'
-    alg = MyAlg()
+# if __name__ == "__main__":
+#     data = r'D:\gugol\Motion_Emotion_Dataset'
+#     save_folder = 'test/videos'
+#     alg = MyAlg()
+#
+#     files = os.listdir(data)
+#     print(f"Files in directory: {files}")
+#     videos = [os.path.join(data, file) for file in files if file.endswith('.mp4')]  # Filter for .mp4 files
+#
+#     for video_path in videos:
+#         video = alg.infer_batch(video_path, save_folder)
 
-    files = os.listdir(data)
-    print(f"Files in directory: {files}")
-    videos = [os.path.join(data, file) for file in files if file.endswith('.mp4')]  # Filter for .mp4 files
-
-    for video_path in videos:
-        video = alg.infer_batch(video_path, save_folder)
