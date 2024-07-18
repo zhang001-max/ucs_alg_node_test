@@ -11,7 +11,7 @@ from src.ucs_alg_node import Alg, Fcn
 
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 model = Fcn()  # 定义模型
-weights_path = "test/weights/model_12.pth"  # 权重
+weights_path = "weights/model_12.pth"  # 权重
 weights = torch.load(weights_path,map_location='cpu')
 model.load_state_dict(weights)
 model.to(device)
@@ -116,3 +116,4 @@ if __name__ == "__main__":
 
     for video_path in videos:
         video = alg.infer_batch(video_path, save_folder)
+
