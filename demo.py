@@ -46,7 +46,7 @@ class MyAlg(Alg):
         img_model = cv2.resize(img, (0, 0), fx=video_resize, fy=video_resize)
         img_grey = cv2.cvtColor(img_model, cv2.COLOR_BGR2GRAY)
         prev_img_grey = img_grey
-        labels = []
+        vals = []
 
         while True:
             ret, img = cap.read()
@@ -66,14 +66,14 @@ class MyAlg(Alg):
             predict = self.model(flow)
             predict = torch.argmax(predict, 1).cpu().numpy()[0]
 
-            labels.append(predict)
+            vals.append(predict)
             prev_img_grey = img_grey
 
         cap.release()
         cv2.destroyAllWindows()
 
         ts = time.time_ns()
-        result = AlgResult(task.id, ts, labels, "inference result")
+        result = AlgResult(task.id, ts, vals, "inference result")
         return result
 
 
@@ -93,7 +93,7 @@ def main():
     }
     task = AlgTask(id=task_id,
                    ts=utils.current_time_milli(),
-                   sources=['C:/ucs_alg_node_test-master/ucs_alg_node_test/Motion_Emotion_Dataset/001.mp4']
+                   sources=['./Motion_Emotion_Dataset/001.mp4']
                    # ['rtsp://localhost:9111/123',
                    #          'mqx://localhost:8011/1123']
                    )
@@ -142,7 +142,7 @@ def main():
 
     print('start node')
     result = alg.infer_batch(task)
-    print(f"Task {task.id} labels: {result.labels}")
+    print(f"Task {task.id} vals: {result.vals}")
     while True:
         time.sleep(5)
 
